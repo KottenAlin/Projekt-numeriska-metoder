@@ -1,6 +1,6 @@
 #set document(
-  title: "Report Title",
-  author: "Author Name",
+  title: "Rapporttitel",
+  author: "Författarnamn",
   date: datetime.today()
 )
 
@@ -10,7 +10,7 @@
   numbering: "1",
   header: [
     #set align(right)
-    Report Document
+    Rapportdokument
   ],
 
 )
@@ -18,7 +18,7 @@
 #set text(
   font: "New Computer Modern",
   size: 11pt,
-  lang: "en"
+  lang: "sv"
 )
 
 #set heading(numbering: "1.1.1")
@@ -46,40 +46,41 @@
 
 #pagebreak()
 
-// Introduction
-= Introduction
+// Introduktion
+= Introduktion
 
 This is the introduction section of your report. Replace this text with your actual content.
 
-== Subsection
+== Underavsnitt
 
 Add your subsection content here.
 
-= Methodology
+= Metod
 
-Describe your methodology in this section.
+== Del 1.1
 
-== Method 1
+
+== Metod 1
 
 Details about method 1.
 
-== Method 2
+== Metod 2
 
 Details about method 2.
 
-= Results
+= Resultat
 
 Present your results here.
 
 
 
 
-= Discussion
+= Diskussion
 
 Discuss your findings and their implications.
 
-= Conclusion
+= Slutsats
 
 Summarize your main findings and conclusions.
 
-= References
+= Referenser
