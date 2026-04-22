@@ -62,8 +62,8 @@ def newton_method(d_0, tolerance, max_iter=10000):
             print("Derivative is zero. No solution found.")
             return None
 
-        d_next = d_n - f(d_n) / f_prime(d_n)
-        errors.append(abs(d_next - d_n))
+        d_next = d_n - f(d_n) / f_prime(d_n) # newtons method formula
+        errors.append(abs(d_next - d_n)) # store the error for convergence analysis
 
         if abs(d_next - d_n) < tolerance:
             print(f"Converged to {d_next} after {i+1} iterations.")

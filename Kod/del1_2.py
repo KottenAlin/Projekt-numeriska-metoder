@@ -21,15 +21,16 @@ delta_p_max = 49080
 delta_T = 29.6
 
 # power
-Q = 80136
+Q = 801368
 
 # first function: Q = A_ex(d) * U_f(d) * delta_T => f(d) = A_ex(d) * U_f(d) * delta_T - Q = 0
 
 def U_f(d, D):
-    return 1/g(d, D)
+    U_f = 1/g(d, D)
+    return U_f
 
 def g(d, D):
-    return (d/(D*h_t)+d*R_fi/D+d*np.log(d/D)/k_w+R_fo+1/h_s)
+    return (d/(D*h_t)+d*R_fi/D+d*np.log(d/D)/(2*k_w)+R_fo+1/h_s)
 
 # second function: U_f = 1/g(d)
 
@@ -39,15 +40,19 @@ def B(d, D):
 
 # forth function A_ex = A(d,D)
 def A(d, D):
-    return np.pi*K_1*(D**n_1/d**(n_1-1))
+    A = np.pi*K_1*(D**n_1/d**(n_1-1))
+    return A
 
 # construct a system of equations to solve for d and D F(d, D) = 0
 
-def F_1(d, D):
-    return A(d, D) * U_f(d, D) * delta_T - Q
+def F_1(d, D): # F1 = A_ex(d, D)/g(d, D) * delta_T - Q => dFdd = dAdd*g(d, D) - A(d, D)*dgdd/g(d, D)**2 * delta_T and dFdD = dAdD*g(d, D) - A(d, D)*dgdD(d, D)/g(d, D)**2 * delta_T
+    F1 = A(d, D) * U_f(d, D) * delta_T - Q
+    return F1
 
 def F_2(d, D):
-    return B(d, D) - delta_p_max
+    F2 = B(d, D) - delta_p_max
+    return F2
+
 
 def F(d, D):
     return np.array([F_1(d, D), F_2(d, D)])
@@ -57,10 +62,10 @@ def F(d, D):
 # To calculate the partial derivatives we need to calculate the derivatives of A, U_f and B with respect to d and D
 
 def dgdd(d, D):
-    return (1/(D*h_t)+R_fi/D+(np.log(d/D)+1)/k_w)
+    return (1/(D*h_t)+R_fi/D+(np.log(d/D)+1)/(2*k_w))
 
 def dgdD(d, D):
-    return (-d/(D**2*h_t)-d*R_fi/D**2-d/(D*k_w))
+    return (-d/(D**2*h_t)-d*R_fi/D**2-d/(2*D*k_w))
 
 def dAdd(d, D):
     return np.pi*K_1*(1-n_1)*D**(n_1)/d**(n_1)
@@ -71,10 +76,10 @@ def dAdD(d, D):
 # Now we can calculate the partial derivatives of F_1 and F_2 with respect to d and D
 
 def dF1dd(d, D):
-    return dAdd(d, D) * g(d,D)-A(d, D) * dgdd(d, D) / g(d, D)**2 * delta_T
+    return (dAdd(d, D) * g(d,D)-A(d, D) * dgdd(d, D) ) / (g(d, D)**2) * delta_T
 
-def dFdD(d, D):
-    return dAdD(d, D) * g(d,D)-A(d, D) * dgdD(d, D) / g(d, D)**2 * delta_T
+def dF1dD(d, D):
+    return (dAdD(d, D) * g(d,D)-A(d, D) * dgdD(d, D) ) / (g(d, D)**2) * delta_T
 
 def dF2dd(d, D):
     return 2*c/(D**2*(S_t-d)**3)
@@ -84,14 +89,15 @@ def dF2dD(d, D):
 
 # Finally, we can construct the Jacobian matrix for the system of equations F(d, D) = 0
 def jacobian(d, D):
-    return np.array([[dF1dd(d, D), dFdD(d, D)],
+    return np.array([[dF1dd(d, D), dF1dD(d, D)],
                      [dF2dd(d, D), dF2dD(d, D)]])
 
 # implement the Newton's method for solving the system of equations F(d, D) = 0
-def newton_method_system(d_0, D_0, tolerance, max_iter=10000):
+def newton_method_system(d_0, D_0, tolerance, max_iter=100):
     d_n = d_0
     D_n = D_0
     errors = []
+    print(f"Initial guess: d = {d_n:.6f}, D = {D_n:.6f}")
     for i in range(max_iter):
         F_n = F(d_n, D_n)
         J_n = jacobian(d_n, D_n)
@@ -101,9 +107,11 @@ def newton_method_system(d_0, D_0, tolerance, max_iter=10000):
             return None
 
         delta = np.linalg.solve(J_n, -F_n)
+        print(f"delta = {delta}")
         d_next = d_n + delta[0]
         D_next = D_n + delta[1]
         errors.append(np.linalg.norm(delta))
+        print(f"Iteration {i+1}: d = {d_next:.6f}, D = {D_next:.6f}, Error = {errors[-1]:.2e}")
 
         if np.linalg.norm(delta) < tolerance:
             print(f"Converged to (d={d_next}, D={D_next}) after {i+1} iterations.")
@@ -131,13 +139,19 @@ def plot_function(F, d_range, D_range):
     plt.show()
 
 def plot_errors(errors):
-    plt.plot(errors, label='Error')
-    plt.yscale('log')
-    plt.xlabel('Iteration')
-    plt.ylabel('Error (log scale)')
-    plt.title('Convergence of Newton\'s Method')
+    plt.figure()
+    plt.loglog(errors[:-1], errors[1:], 'o-', label='Newton convergence')
+
+    # Invertera x-axeln
+    plt.gca().invert_xaxis()
+
+    # Lägg till referenslinjer för linjär (p=1) och kvadratisk (p=2) konvergens
+    # Detta hjälper att se om lutningen matchar förväntad kvadratisk konvergens
+    plt.xlabel('$e_k$')
+    plt.ylabel('$e_{k+1}$')
+    plt.title('Log-log plot of $e_{k+1}$ vs $e_k$')
+    plt.grid(True, which="both", ls="-", alpha=0.5)
     plt.legend()
-    plt.grid()
     plt.show()
 
 def main():
