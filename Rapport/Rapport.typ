@@ -5,7 +5,7 @@
 )
 
 #set page(
-  paper: "a4",m
+  paper: "a4",
   margin: (left: 2cm, right: 3cm, top: 2.5cm, bottom: 2.5cm),
   numbering: "1",
   header: [
@@ -68,7 +68,8 @@ Projektet är indelat i två delar, där den första delen syftar till att lösa
 #align(center)[
 #image("/assets/image-1.png", alt: "Bildbeskrivning", width: 60%, )]
 
-Den andra delen fokuserar på att lösa ett randvärdesproblem som beskriver värmeöverföringen i en kylfläns. Med hjälp av diskretisering av och finita differnsmetoden, beräknas temperaturfördelningen längs kylflänsen för material med olika egenskaper.
+Den andra delen fokuserar på att lösa ett randvärdesproblem som beskriver värmeöverföringen i en kylfläns.
+Med hjälp av diskretisering, med centrerad differns, och finita differnsmetoden, beräknas temperaturfördelningen längs kylflänsen för material med olika egenskaper.
 
 #align(center)[
 #image("/assets/image-2.png", alt: "Bildbeskrivning", width: 60%, )
@@ -171,8 +172,39 @@ $
 
 
 == Del 2.1
+Denna del går ut på att teoretiskt härleda approximationen i @eq12 med hjälp av Taylorytveckling, och implementera tre olika approximationer i _Python_ för att derivatan av *$sin(e^x)$* vid $x=0.75$.
+$
+  f(x_j) = (-omega_(j+2) + 4 omega_(j+1) - 3 omega_j) / (2h) + cal(O)(h^2)
+$
+$
+  f'(x_j) = (3omega_j - 4 omega_(j-1) + omega_(j-2)) / (2h) + cal(O)(h^2)
+$ <eq12>
+$
+  f'(x_j) = (omega_(j+1)-(omega_(j-1)))/(2h) + cal(O)(h^2)
+$
+$omega_j = f(x_j)= f(a+j h)$ där $a$ är startpunkten, $b$ är slutpunkten, och $h$ är steglängden $h=(b-a)/N$, där $N$ är antalet delintervall.
+
+
+
 
 == Del 2.2
+Denna del fokuserade på att lösa ett randvärdesproblem som beskriver av differensialekvationen
+$
+  (d^2 T)/(d x^2) = alpha_1(T-T_infinity) + alpha_2 (T^4-T^4_infinity), quad quad x in [0, L]
+$<eq14>
+Samt dirichlet randvillkor:
+$
+  T(0)=T_s, quad quad T(L)=T_inf
+$
+Detta problem kan lösas genom att diskritetisera andra ordningens derivata med central differens, där den andra derivatan approximativt kan skrivas som:
+$
+  (d^2 T)/(d x^2) approx (T_(j+1) - 2T_j + T_(j-1))/(h^2) quad quad (+  cal(O)(h^2))
+$<eq16>
+Där $h=(L)/N$, där $N$ är antalet delintervall.
+
+Vidare kan uttrycket skrivas för varje givet $T_j=T(h j)$ som en funktion: $F_j (T_(j-1), T_j, T_(j+1)) = 0$, där $T_0=T_s$ och $T_N=T_(infinity)$.
+Detta ger upphov till ett system av icke-linjära ekvationer ($arrow(F) = (F_1, F_2, ..., F_(N-1)) = arrow(0)$) som kan lösas med hjälp av Newtons metod för system, $arrow(T)^(k+1)= arrow(T)^(k) - J^(-1) arrow(F)(T^(k))$. #footnote[Notera $arrow(T^k)$ används som superskript och inte som exponent ]
+
 
 
 = Resultat
@@ -397,10 +429,73 @@ caption: [Log log]
 
 
 == Del 2.1
+=== Uppgift 6
+*a)* Denna uppgift skall härleda den givna approximationen i @eq12 genom att använda Taylorytveckling av funktionen $f$ runt punkten $x+h$, och ta fram det specifika uttrycket för felet i approximationen, som är av ordning $h^2$.
+
+$
+  f(x_j) = (-omega_(j+2) + 4 omega_(j+1) - 3 omega_j) / (2h) + cal(O)(h^2) = (-f(x_j+2h) + 4 f(x_j+h) - 3 f(x_j)) / (2h)
+$
+$
+  f(x_j+2h) = f(x_j) + 2h f'(x_j) + (2h)^2/2 f''(x_j) + (2h)^3/6 f'''(xi_1)
+$
+$
+  f(x_j+h) = f(x_j) + h f'(x_j) + h^2/2 f''(x_j) + h^3/6 f'''(xi_2)
+$
+Genom att substituera dessa uttryck i approximationen
+
+
+$
+  (-f(x_j) - 2h f'(x_j) - 2h^2 f''(x_j) - 8h^3/6 f'''(xi_1) + 4f(x_j) + 4h f'(x_j) + 2h^2 f''(x_j) + 4h^3/6 f'''(xi_2) - 3f(x_j)) / (2h)
+$
+$
+  = (2h f'(x_j) + 4h^3/6 f'''(xi_2) - 8h^3/6 f'''(xi_1)) / (2h) = f'(x_j) + h^2/3 (f'''(xi_2) - 4f'''(xi_1))
+$
+$
+  = f'(x_j) + cal(O)(h^2)
+$
+Där $xi_1, xi_2 in [x_j, x_j+2h]$. Detta visar att felet i approximationen är av ordning *$h^2$*.
+
+
+
+*b)* Denna uppgift skall implementera tre olika finita differnsmetoder i _Python_ för att approximera derivatan av *$sin(e^x)$* vid $x=0.75$. Resultatet skall jämföras med den exakta derivatan, samt analysera plotta felet i varje metod för olika värden av $h=2^-k$, där  $k=1,2,3,4,5,6,7,8$.
+detta gav följande resultat:
+
+#align(center)[
+  #block(
+    fill: luma(81.61%),
+    inset: 8pt,
+    radius: 4pt,
+```bash
+Analytical derivative at x=0.75: -1.09967e+00
+h = 5.00000e-01, eq8: -1.30089e+00, eq12: -3.42609e+00, eq13: -5.70715e-01
+h = 2.50000e-01, eq8: -1.17237e+00, eq12: -1.15732e+00, eq13: -9.30383e-01
+h = 1.25000e-01, eq8: -1.11918e+00, eq12: -1.07648e+00, eq13: -1.05550e+00
+h = 6.25000e-02, eq8: -1.10463e+00, eq12: -1.09127e+00, eq13: -1.08889e+00
+h = 3.12500e-02, eq8: -1.10091e+00, eq12: -1.09734e+00, eq13: -1.09705e+00
+h = 1.56250e-02, eq8: -1.09998e+00, eq12: -1.09907e+00, eq13: -1.09903e+00
+h = 7.81250e-03, eq8: -1.09975e+00, eq12: -1.09952e+00, eq13: -1.09951e+00
+h = 3.90625e-03, eq8: -1.09969e+00, eq12: -1.09963e+00, eq13: -1.09963e+00
+
+    ```
+  ),
+]
+
+
+
+
+
 
 == Del 2.2
 
+=== Uppgift 7
+Denna uppgift skall diskritisera intervallet $[0, L]$ i $N=4$ delintervall, och approximera andra derivatan med central differens, För att sätta upp det resulterande systemet av icke-linjära ekvationer och dess jacobimatris.
 
+Intervallet $[0, L]$ diskretiseras i $N=4$ delintervall, vilket ger 5 punkter: $x_0=0$, $x_1=L/4$, $x_2=L/2$, $x_3=3L/4$, och $x_4=L$. Med dirichlet randvillkor, där $T(0)=T_s$ och $T(L)=T_infinity$, är de okända temperaturerna vid de inre punkterna $T_1=T(L/4)$, $T_2=T(L/2)$, och $T_3=T(3L/4)$.
+
+Från @eq14 och @eq16 kan uttrycket för varje inre punkt skrivas som:
+$
+  F
+$
 
 
 = Diskussion

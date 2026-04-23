@@ -45,6 +45,8 @@ def main():
 
     error = {'error_8': [], 'error_12': [], 'error_13': []}
 
+    print(f"Analytical derivative at x={x}: {f_prime_analytical(x):.5e}")
+
     for k in K:
         h_k = h(k)
         d_8 = derivative_8(f, x, h_k)
@@ -59,8 +61,11 @@ def main():
         error['error_8'].append(error_8)
         error['error_12'].append(error_12)
         error['error_13'].append(error_13)
+        print(f"h = {h_k:.5e}, eq8: {d_8:.5e}, eq12: {d_12:.5e}, eq13: {d_13:.5e}")
+        print(f"eq8 error : {error_8:.5e}, eq12 error: {error_12:.5e}, eq13 error: {error_13:.5e}")
 
-        print(f"h = {h_k:.5e}, 8-point error: {error_8:.5e}, 12-point error: {error_12:.5e}, 13-point error: {error_13:.5e}")
+    #print the results in a table format
+
 
     # Plot the errors
     plot_error([h(k) for k in K], error['error_8'], xlabel='h', ylabel='Error', title='8-point Finite Difference Error')
