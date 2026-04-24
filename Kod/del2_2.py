@@ -2,6 +2,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+try:
+    from scipy.linalg import solve_banded
+except ImportError:
+    solve_banded = None
+
 class second_derivative:
     def __init__(self, a_1, a_2, T_inf):
         self.a_1 = a_1
@@ -37,7 +42,6 @@ def finite_difference(a_1, a_2, T_inf, T_s, L, N=100):
     def T_analytical(x):  # The analytical solution to the simplified problem, which is derived from the linearized version of the heat transfer equation, can be expressed as an exponential decay function. This function describes how the temperature T changes with respect to the distance x along the rod, starting from the initial temperature T_s at x=0 and approaching the ambient temperature T_inf as x increases.
         return T_inf + (T_s - T_inf) * np.exp(-np.sqrt(a_1) * x)
 
-
     F_list = []
 
     def F(T):
@@ -52,26 +56,31 @@ def finite_difference(a_1, a_2, T_inf, T_s, L, N=100):
         F_list.append(F_vec)
         return F_vec
 
-    def jacobian(T):
-        J = np.zeros((N-1, N-1))
-        for i in range(1, N):
-            # Calculate the Jacobian matrix of the finite difference approximation of the second derivative of T with respect to x at point i.
-            J[i-1, i-1] = -2-h**2*(a_1+a_2*4*T[i]**3) # Calculate the diagonal elements of the Jacobian matrix.
-
-            if i > 1: # Calculate the off-diagonal elements of the Jacobian matrix.
-                J[i-1, i-2] = 1
-
-            if i < N-2:
-                J[i-1, i] = 1
-        return J
+    def jacobian_banded(T):
+        """Return the tridiagonal Jacobian in SciPy's banded storage format."""
+        n = N - 1
+        ab = np.zeros((3, n))
+        ab[0, 1:] = 1
+        ab[1, :] = -2 - h**2 * (a_1 + a_2 * 4 * T[1:-1]**3)
+        ab[2, :-1] = 1
+        return ab
 
     def newton_method(T0, tol=1e-6, max_iter=1000):
         T = T0.copy()
         for _ in range(max_iter):
             F_vec = F(T)
-            J = jacobian(T)
 
-            delta_T = np.linalg.solve(J, -F_vec) # Solve the linear system J * delta_T = -F_vec to find the update for T.
+            if solve_banded is not None:
+                ab = jacobian_banded(T)
+                delta_T = solve_banded((1, 1), ab, -F_vec)
+            else:
+                # normal dense Jacobian (not recommended for large N)
+                J = np.zeros((N-1, N-1))
+                np.fill_diagonal(J, -2 - h**2 * (a_1 + a_2 * 4 * T[1:-1]**3))
+                np.fill_diagonal(J[1:], 1)
+                np.fill_diagonal(J[:, 1:], 1)
+                delta_T = np.linalg.solve(J, -F_vec)
+
             T[1:-1] += delta_T # Update the interior points of T using the calculated delta_T.
             #print("Current T:", T)
             #plot_function(x, T, T_analytical, multiple=False)
@@ -107,9 +116,12 @@ def plot_function(x, T, T_analytical=None, multiple=False):
     plt.grid()
     plt.show()
 
-def plot_error(x, error, xlabel='x', ylabel='Error', title='Error between Finite Difference and Analytical Solution'):
+def plot_error(x, error, xlabel='x', ylabel='Error', title='Error between Finite Difference and Analytical Solution', log=False):
     import matplotlib.pyplot as plt
     plt.plot(x, error, label='Error')
+    if log:
+        plt.xscale('log')
+        plt.yscale('log')
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.title(title)
@@ -216,61 +228,50 @@ def main():
         #plot the results
         plot_function(x_fd, T_fd)
 
-        def compare_solutions(L1, L2):
-            x1, T1 = finite_difference(a_1, a_2, T_inf, T_0, L1, N)
-            x2, T2 = finite_difference(a_1, a_2, T_inf, T_0, L2, N)
+        def compare_solutions(L1, L2, h=None):
+            if h:
+                N1 = max(50, int(np.ceil(L1 / h)))
+                N2 = max(50, int(np.ceil(L2 / h)))
+            else:
+                N1 = N2 = 400
+
+            x1, T1 = finite_difference(a_1, a_2, T_inf, T_0, L1, N1)
+            x2, T2 = finite_difference(a_1, a_2, T_inf, T_0, L2, N2)
 
             # interpolate T2 onto the x1 grid
             #plot_function(x1, {'L1': T1, 'L2': np.interp(x1, x2, T2)}, multiple=True)
 
             T2_on_x1 = np.interp(x1, x2, T2)
 
-            error = T1 - T2[:len(T1)] # Calculate the error between the two solutions at the corresponding points in the x1 grid.
+            error = T1 - T2_on_x1 # Calculate the error between the two solutions on the same x-grid.
             rmse = np.sqrt(np.mean(error**2))
 
             return rmse
 
-        def find_infinite_length(L0=0.1, tol=1e-1):
+        def find_infinite_length(L0=0.01, rel_tol=1e-3, material=None):
             L = L0
 
-            max_L = 10.0  # Set a maximum length to prevent infinite loops
+            max_L = 100.0  # Set a maximum length to prevent infinite loops
             error_list = []
             L_values = []
+            tol = rel_tol * (T_0 - T_inf)  # Set the tolerance based on the relative error criterion
             while L < max_L:
-                err = compare_solutions(L, L+0.1)
+                err = compare_solutions(L, L*0.5)
 
-                print(f"L={L:.3f}, error={err:.6e}")
+                print(f"L={L:.3f}, error={err:.6e} relative error: {err/(T_0-T_inf):.6e}")
                 error_list.append(err)
                 L_values.append(L)
 
                 if err < tol:
-                    break
+                    L_infinite = L
+                    print(f"Estimated length for infinite approximation: {L_infinite:.3f} m")
+                    tol=0
 
-                L += 0.1
+                L *= 1.1
             plot_error(L_values, error_list, xlabel='Length (L)', ylabel='RMSE',
-                       title='Error between Solutions for Different Lengths')
+                       title=f'Error between Solutions for Different Lengths ({material})', log=True)
+            return L_infinite
 
-            # log log plot of error vs L
-            '''error_list = []
-            L_values = []
-            L_test = L0
-            for i in range(15):
-                err = compare_solutions(L_test, L_test*2)
-                print(f"L={L_test:.3f}, error={err:.6e}")
-                error_list.append(err)
-                L_values.append(L_test)
-                L_test *= 2
-            plt.figure(figsize=(8, 6))
-            plt.plot(L_values, error_list, marker='o')
-            plt.xscale('log')
-            plt.yscale('log')
-            plt.xlabel('Length (L)')
-            plt.ylabel('Root Mean Square Error')
-            plt.title('Convergence of Solutions as Length Increases')
-            plt.grid()
-            plt.show()'''
-
-            return L
         L_infinite = {}
 
         for material, properties in materials.items():
@@ -281,10 +282,12 @@ def main():
             a_1 = 4 * h_c / (D * K)
             a_2 = 4*epsilon * sigma / (D * K)
 
-            L_infinite[material] = find_infinite_length()
+            L_infinite[material] = find_infinite_length(material=material)
+            #L_infinite_ref = find_infinite_length_reference()
 
         for material, L in L_infinite.items():
             print(f"Estimated length for infinite approximation ({material}): {L:.3f} m")
+            #print(f"Estimated length for infinite approximation with reference ({material}): {L_infinite_ref:.3f} m")
 
 
 
