@@ -370,7 +370,7 @@ def newton_method_system(d_0, D_0, tolerance, max_iter=10000):
 
     print("Maximum iterations reached. No solution found.")
     return None
-```)
+```
 
 Lösningen i python är mycket lika lösningen från del 1.1 (@del1.1), med skillnaden att derivatan är utbytt mot Jacobimatrisen, och att både $d$ och $D_s$ löses ut med hjälp av linjära algebra. Lösningen konvergerar till *$d=0.0118869m$* och *$D_s=0.684476m$* efter 9 itterationer.
 
@@ -413,7 +413,7 @@ Order of convergence at iteration 8: 2.0036658242583423
   ```
 )]
 
-Detta ger en konvergensordning som i början svänger kraftigt, men som sedan stabiliseras runt *2*, vilket är i linje med den teoretiska konvergensordningen för Newtons metod ().
+Detta ger en konvergensordning som i början svänger kraftigt, men som sedan stabiliseras runt *2*, vilket är i linje med den teoretiska konvergensordningen för Newtons metod.
 
 #figure(
 
@@ -594,7 +594,7 @@ def finite_difference(a_1, a_2, T_inf, T_s, L, N=100):
 För att få en startgissning för $T$, kan en linjär interpolation mellan randvillkoren användas, där $T_i = T_s + (T_inf - T_s) dot (x_i / L)$ för varje inre punkt $x_i$.
 
 === Uppgift 8.3
-Denna uppgift skall använda den implementerade lösningen i uppgift 8.1 (@uppgift8.2[]) för att lösa randvärdesproblemet för $N=400$ delintervall, med givna paramtrar $T(L)=T_(infinity)$ $alpha_1 = (4h_c)/(D dot K)$ och från @Tabell3. Lösningen skall sedan plottas och jämföras med den analytiska lösningen av det linjära problemet, där den icke-linjära termen i @eq14 ignoreras:
+Denna uppgift skall använda den implementerade lösningen i uppgift 8.1 (@uppgift8.2[]) för att lösa randvärdesproblemet för $N=400$ delintervall, med givna paramtrar $T(L)=T_(infinity)$ $alpha_1 = (4h_c)/(D dot K)$ och från @Tabell3. Lösningen skall sedan plottas och jämföras med den analytiska lösningen av det linjära problemet, och Nogranhetsordningen beräknas.
 $
   T(x) = T_infinity + (T_s - T_infinity) dot e^(-sqrt(alpha_1) x)
 $
@@ -623,21 +623,49 @@ För att jämför de numeriska $T$  lösningen med den analytiska $cal(T)$, kan 
 där :
 $
 e_(r m s) = (1/(N-1) dot sum_(k)^(N-1 )(T_k- cal(T)_k)^2)^(1 slash 2)
-$.
-
+$<eq51>
+*a)*
 Den numeriska lösningen ger en mycket bra approximation av den analytiska lösningen, med ett felet *$e_(r m s) = 0.00365 space K$*, som i plotten (@Figur3) ser identiska ut. Från @Figur4 kan det även ses att felet är störst nära $x=0$.
 
 
   #figure(
 
-    image("/assets/del2.2.1.png", width: 85%),
+    image("/assets/del2.2.1.png", width: 80%),
   caption: [Numerisk lösning jämfört med analytisk lösning.]
 ) <Figur3>
 
 #figure(
-    image("/assets/del2.2.2.png", width: 85%),
+    image("/assets/del2.2.2.png", width: 80%),
   caption: []
 ) <Figur4>
+
+*b)*
+För att beräkna norgranhets ordningen, kan felet (rms @eq51) beräknas för olika värden av $N = 50, 100, 200, 400, 800$ ($h= L/(N-1)$), och sedan använda formeln:
+$
+  e approx C h^(-p) => ln(e) = ln(C) - p ln(h) => p = (ln(e_2) - ln(e_1)) / (ln(h_2) - ln(h_1))
+$
+
+Detta resulterade i en uppskattning av nogranhetsordningen *$p=1.98$*, vilket är i linje med den teoretiska nogranhetsordningen för central differensmetoden, som är 2.
+
+#align(center)[
+#block(
+    fill: luma(81.61%),
+    inset: 8pt,
+    radius: 4pt,
+```bash
+Order of convergence between N=50 and N=100: 1.95
+Order of convergence between N=100 and N=200: 1.99
+Order of convergence between N=200 and N=400: 2.00
+Order of convergence between N=400 and N=800: 2.0
+    ```
+  )]
+#figure(
+  image("/assets/8.3/Figure_1.png", width: 80%),
+  caption: [loglog]
+)
+
+
+
 
 === Del 8.4
 Här ska både den linjära och icke-linjära termen i ekvationen @eq14 lösas, för att modellera värmestrålningens effekt. Lösningen skall implementerar tre olika flänsar med olika materialegenskaper (@Tabell4), och resultaten jämföras in en plot.
