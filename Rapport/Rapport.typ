@@ -60,26 +60,34 @@
 // Introduktion
 = Introduktion
 
-Detta prjekt är en del av kursen SF1546 - Projekt numeriska metoder, och syftar till att tillämpa numeriska metoder för att lösa problem inom värmeöverföring i en värmeväxlare och kylflänsar.
+Detta projekt ingår i kursen SF1546 - Projekt numeriska metoder, och syftar till att tillämpa numeriska metoder för att lösa problem innom värmeöverföring i en värmeväxlare och kylflänsar.
 
-Målet med projektet är att lösaproblem kopplade till värkligheten, med numeriska metoder, särskill de som inehåller ickelinjära ekvationssystem och randvärdesproblem. Genom att använda dessa metoder, kommer vi att kunna analysera och optimera värmeöverföringen i de givna systemen.
+Målet med projektet är att lösa problem kopplade till verkligheten, med numeriska metoder, särskilt de som innehåller ickelinjära ekvationssystem och randvärdesproblem. Genom att använda dessa metoder, kommer vi att kunna analysera och optimera värmeöverföringen i de givna systemen.
 
 
-Projektet är indelat i två delar, där den första delen syftar till att lösa ett icke-linjärt ekvationssystem som beskriver värmeöverföringen i en värmeväxlare, med hjälp av Newtons metod ($x_(n+1) = x_n - f(x_n)/(f'(x_n))$), för att få beräkna den maximala ytterdimatern *$d$* och sedan innderdiameter $D_s$.
+Projektet är indelat i två delar, där den första delen syftar till att lösa ett icke-linjärt ekvationssystem som beskriver värmeöverföringen i en värmeväxlare, med hjälp av Newtons metod ($x_(n+1) = x_n - f(x_n)/(f'(x_n))$), för att få beräkna den maximala ytterdiametern *$d$* och sedan innerdiameter $D_s$.
 
-#align(center)[
-#image("/assets/image-1.png", alt: "Bildbeskrivning", width: 60%, )]
+#figure(
+  align(center)[
+#image("/assets/image-1.png", alt: "Bildbeskrivning", width: 60%, )],
+  caption: [Schematiskt diagram över värmeväxlaren och de givna parametrarna (finns även i kursens projektbeskvning), hämtad från
+  #link("https://commons.wikimedia.org/wiki/File:Straight-tube_heat_exchanger_1-pass.PNG")
+  ]
+) <Figur1>
+
 
 Den andra delen fokuserar på att lösa ett randvärdesproblem som beskriver värmeöverföringen i en kylfläns.
 Med hjälp av diskretisering, med centrerad differns, och finita differnsmetoden, beräknas temperaturfördelningen längs kylflänsen för material med olika egenskaper.
 
-#align(center)[
-#image("/assets/image-2.png", alt: "Bildbeskrivning", width: 60%, )
-]
-
+#figure(
+  align(center)[
+#image("/assets/image-2.png", alt: "Bildbeskrivning", width: 60%, )],
+  caption: [Schematiskt diagram över kylflänsen och de givna parametrarnahämtad från kursens projektbeskvning.
+  ]
+)
 = Metod
 
-== Del 1.1 <del1.1>
+== Del 1.1  Newtons metod för en rot <del1.1>
 Det första problemet kan beskrivas av följande icke-linjära ekvationssystem med givna parametrar (@Tabell1):
     $
      Q(d)=A_(e x) dot U_f dot Delta T_m
@@ -105,7 +113,7 @@ Det första problemet kan beskrivas av följande icke-linjära ekvationssystem m
 caption: [parametrar för värmeöverföringen i värmeväxlaren],
 ) <Tabell1>
 ]
-  Specefikationer för värmeöverföringen i värmeväxlaren är som följer:
+  Specifikationer för värmeöverföringen i värmeväxlaren är som följer:
   $ Delta T_m = 29.6 degree C$ och $ Q = 801368 W$; den minsta ytarean som upfyller specefkationerna är given till $ A_(e x) = 64.15 m^2$ och skalets innerdiameter är $ D_s = 1.219m$.
 
 Alla parametrar förutom $d$ är kända, och genom att konstruera en funktion $f(d)$ som representerar skillnaden mellan den beräknade värmeöverföringen och den givna värmeöverföringen, kan problemet formuleras som att hitta roten till denna funktion; det vill säga där $f(d) = 0$.
@@ -118,7 +126,7 @@ $
 $
 
 
-== Del 1.2
+== Del 1.2 Newtons metod för system av ekvationer <del1.2>
 Det andra problemet bygger på @del1.1 (del 1.2) med två ytterligare ekvationer och ginva parametrar (@Tabell2), där både $d$ och $D_s$ är okända:
 
 #columns(2)[
@@ -148,7 +156,7 @@ $ <eq6>
   ) <Tabell2>
 ]
 
-Specefikationerna för värmeöverföring är samma som i del 1.1 ($Delta T_m = 29.6 degree C$ och $Q = 801368 W$), och en given maximal tryckskillnad över värmeväxlaren $Delta P = 49080 P a$.
+Specifikationerna för värmeöverföring är samma som i del 1.1 ($Delta T_m = 29.6 degree C$ och $Q = 801368 W$), och en given maximal tryckskillnad över värmeväxlaren $Delta P = 49080 P a$.
 
 och genom att använda de två nya ekvationerna, kan både $d$ och $D_s$ lösas samtidigt genom att konstruera ett system av två icke-linjära ekvationer och använda newtons metod för system.
 
@@ -173,8 +181,8 @@ $
 
 
 
-== Del 2.1
-Denna del går ut på att teoretiskt härleda approximationen i @eq12 med hjälp av Taylorytveckling, och implementera tre olika approximationer i _Python_ för att derivatan av *$sin(e^x)$* vid $x=0.75$.
+== Del 2.1 Finita differenser för derivata
+I Detta avsnitt härleds approximationen i @eq12 med hjälp av Taylorytveckling, och implementera tre olika approximationer i _Python_ för att derivatan av *$sin(e^x)$* vid $x=0.75$.
 $
   f(x_j) = (-omega_(j+2) + 4 omega_(j+1) - 3 omega_j) / (2h) + cal(O)(h^2)
 $
@@ -189,7 +197,8 @@ $omega_j = f(x_j)= f(a+j h)$ där $a$ är startpunkten, $b$ är slutpunkten, och
 
 
 
-== Del 2.2
+== Del 2.2 Randvärdesproblem med Newtons metod
+
 Denna del fokuserade på att lösa ett randvärdesproblem som beskriver av differensialekvationen
 $
   (d^2 T)/(d x^2) = alpha_1(T-T_infinity) + alpha_2 (T^4-T^4_infinity), quad quad x in [0, L]
@@ -198,7 +207,7 @@ Samt dirichlet randvillkor:
 $
   T(0)=T_s, quad quad T(L)=T_inf
 $
-Detta problem kan lösas genom att diskritetisera andra ordningens derivata med central differens, där den andra derivatan approximativt kan skrivas som:
+Detta problem kan lösas genom att diskretisera andra ordningens derivata med central differens, där den andra derivatan approximativt kan skrivas som:
 $
   (d^2 T)/(d x^2) approx (T_(j+1) - 2T_j + T_(j-1))/(h^2) quad quad (+  cal(O)(h^2))
 $<eq16>
@@ -224,7 +233,7 @@ $U_f '(d)$ kan beräknas genom att använda kvotregeln för derivering, där $g(
 $
   g(d) = d/(D_s dot h_t)+d dot R_(f i)/D_s+ (d dot ln(d slash D_s))/(2k_w)+ R_(f o)+ 1/h_s $
 $
-  U_f(d) = 1/g(d) = g(d)^(-1) => U_f '(d) = -1/(g'(d)^2)
+  U_f(d) = 1/g(d)  => U_f '(d) = -g'(d)/(g(d)^2)
 $
 $g(d)$ är relativt enkelt att derivera förutom den logaritmiska termen, där och produktregeln måste användas.
 
@@ -235,9 +244,9 @@ $
 $#footnote[$d/(d d)(ln(d slash D_s)) = d/(d d)(ln(d)-ln(D_s)) = 1/d- 0$]
 Detta ger derivatan:
 $
-  g'(d) = 1/(D_s dot h_t) + R_(f i)/D_s + (ln(d slash D_s)+1)/(2k_w) + (1/(2k_w))
+  g'(d) = 1/(D_s dot h_t) + R_(f i)/D_s + (ln(d slash D_s)+1)/(2k_w)
   $<eq15>
-  $ => f'(d) = - (A_(e x) dot Delta T_m )/(1/(D_s dot h_t) + R_(f i)/D_s + (ln(d slash D_s)+1)/(2k_w) )^2
+  $ => f'(d) = - (A_(e x) dot Delta T_m ) dot (1/(D_s dot h_t) + R_(f i)/D_s + (ln(d slash D_s)+1)/(2k_w) )/(1/(D_s dot h_t) + R_(f i)/D_s + (ln(d slash D_s)+1)/(2k_w) )^2
 $
 === Uppgift 2
 Denna uppgift skall implementera Newtons metod i _Python_, med den beräknade derivatan, för att iterativt närma sig lösningen för $d$, med en startgissning $d_0 = 0.007m$ och en tolerens på $10^(-8)$ (Givet från uppgiften).
@@ -266,7 +275,11 @@ def newton_method(d_0, tolerance, max_iter=10000):
 
 ```
 
-Denna lösning ger svaret *$d=0.00746192m$* efter endast 3 iterationer, vilket visar på en snabb konvergens.
+Denna kod ger svaret *$d = 0.0191314071m approx 19.1m m$* efter 4 iterationer, vilket visar på en snabb konvergens även med den uppdaterade modellen.
+
+(Diskussion)
+En ytterdiameter på cirka 19 mm är fortfarande en rimlig lösning för en värmeväxlare (@Figur1), och detta är därför den fysikaliskt relevanta roten i det aktuella intervallet.
+
 === Upgift 3
 Denna uppgift skall analysera konvergensordningen för Newtons metod genom att använda de beräknade felen från varje iteration. och jämföra lösningen mod pythons egna lösning
 
@@ -278,15 +291,27 @@ $
 $
   e_(k+2)/e_(k+1) = (C e_(k+1)^p)/(C e_k^p) =  (e_(k+1)/e_k)^p => ln(e_(k+2)/e_(k+1)) = p ln(e_(k+1)/e_k) => p = ln(e_(k+2) slash e_(k+1)) / ln(e_(k+1) slash e_k)
 $ <eq18>
-Implementeringen av detta i _Python_ ger en uppskattning av konvergensordningen *$p=1.9901146 approx 2$*, och stämmer väl överens med den teoretiska konvergensordningen för Newtons metod, som är 2.
+Implementeringen av detta i _Python_ ger nu en uppskattning av konvergensordningen *$p=2.3561$*. Det ligger relativt nära den teoretiska konvergensordningen för Newtons metod, som är 2#footnote[Detta kan härledas med Taylor utveckling (#link("https://math.libretexts.org/Bookshelves/Applied_Mathematics/Numerical_Methods_(Chasnov)/02%3A_Root_Finding/2.04%3A_Order_of_Convergence ")[se länk]), och hämtades från föreläsningsanteckningarna].
 
-*b)* Lösningen från Scipy: (`optimized_solution = optimize.fsolve(f, d_0)`) ger *$d=0.00746195m$*, vilket är i praktiken identiskt med vår implementerade lösning, och bekräftar att vår implementation av Newtons metod är korrekt och effektiv.
+*b)* Lösningen från Scipy: (`optimized_solution = optimize.fsolve(f, d_0)`) ger *$d=0.0191314071m$*, vilket i praktiken är identiskt med vår implementerade lösning, och bekräftar att vår implementation av Newtons metod är korrekt.
 
 *c)*
+Genom att plotta funktionen $f(d)$ över intervallet $[0, 2]$ kan vi visuellt bekräfta att det finns två rötter. Den första ligger nära $d approx 0.0191m$, vilket stämmer med både Newtons metod och SciPy:s `fsolve` när startgissningen ligger nära denna lösning.
+
+Den andra roten ligger nära $d approx 0.8314m$. Detta stämmer väl med körningarna där startgissningar som $0.4$, $0.95$ och $1.1$ konvergerar mot samma andra rot. För en startgissning som $1.5$ lämnar Newtons metod däremot det område där funktionen är väldefinierad, vilket ger varningar kopplade till $ln(d/D_s)$.
+
+Det bör dock understrykas att den andra roten inte är en rimlig lösning för problemet, eftersom den ger en mycket stor ytterdiameter i förhållande till skalets innerdiameter $D_s = 1.219m$. Den fysikaliskt relevanta lösningen är därför roten nära $0.0191m$.
+#figure(
+image("/assets/del1/man.png"),
+
+  caption: [plot av $f(d)$ över intervallet $[0, 2]$ ]
+)
+
+
 
 == Del 1.2
 === Uppgift 4
-Denna uppgift skall formulera det icke-linjära ekvationssystemet så att det kan lösas med Newtons metod för system. I metoden konstruerades en vektorvärd funktion $ arrow(F) = (F_1, F_2)$ där $F_1$ (@eq8) och $F_2$ (@eq9) är de två ekvationerna som beskriver systemet. För att implementera Newtons metod för system ($arrow(x)_(n+1) = arrow(x)_n - J^(-1) arrow(F)(x_n)$), krävs även Jacobimatrisen, som består av de partiella derivatorna av $F_1$ och $F_2$ med avseende på variablerna $d$ och $D_s$.
+Upgiften syftar till att formulera det icke-linjära ekvationssystemet så att det kan lösas med Newtons metod för system. I metoden konstruerades en vektorvärd funktion $ arrow(F) = (F_1, F_2)$ där $F_1$ (@eq8) och $F_2$ (@eq9) är de två ekvationerna som beskriver systemet. För att implementera Newtons metod för system ($arrow(x)_(n+1) = arrow(x)_n - J^(-1) arrow(F)(x_n)$), krävs även Jacobimatrisen, som består av de partiella derivatorna av $F_1$ och $F_2$ med avseende på variablerna $d$ och $D_s$.
 Jacobimatrisen $J$ kan skrivas som:
 $
   J = mat(
@@ -300,7 +325,7 @@ $
   F_2 = c/(D_s^2(S_t-d)^2) - Delta P = c/h(d, D_s) - Delta P quad quad (h(d, D_s) = D_s^2(S_t-d)^2)
 
 $
-$  => (partial F_2)/(partial d) = -c/(h(d, D_s)^2)(partial h)/(partial d) = c(2D_s^2(S_t-d))/(D_s^4(S_t-d)^4) = (2c)/(D_s^2(S_t-d)^3) $
+$  => (partial F_2)/(partial d) = -c/(h(d, D_s)^2)(partial h)/(partial d) = -c(2D_s^2(S_t-d))/(D_s^4(S_t-d)^4) = -(2c)/(D_s^2(S_t-d)^3) $
 $  => (partial F_2)/(partial D_s) = -c/(h(d, D_s)^2)(partial h)/(partial D_s) = c(2D_s (S_t-d)^2)/(D_s^4(S_t-d)^4) = (2c)/(D_s^3(S_t-d)^2) $
 
 $
@@ -325,18 +350,10 @@ $
 
 $ (partial g)/(partial D_s) = -d/(D_s^2 dot h_t) - d dot R_(f i)/D_s^2 - d /(2k_w D_s) quad (partial/(partial D_s)(d dot ln(d slash D_s))=  1/(d slash D_s) dot -d/(D_s^2) = -1/ D_s  ) $
 
-Jacobimatrisen kan därmed skrivas som:
-$
-  mat(
-    delim: "[",
-    Delta T_m ((partial A_(e x))/(partial d)  dot g(d, D_s) - A_(e x) dot (partial g)/(partial d))/g(d, D_s)^2,    = Delta T_m ((partial A_(e x))/(partial D_s)  dot g(d, D_s) - A_(e x) dot (partial g)/(partial D_s))/g(d, D_s)^2 ;
-    (2c)/(D_s^2(S_t-d)^3), (2c)/(D_s^3(S_t-d)^2)
-  )
-$
 
 === Uppgift 5
 *a)*
-Denna uppgift skall implementera Newtons metod för system i _Python_, med den beräknade Jacobimatrisen, för att iterativt närma sig lösningen för $d$ och $D_s$, med startgissningen $d_0 = 0.015m$ och $D_(s 0) = 0.8m$, och en tolerens på $10^(-8)$; samt analysera konvergensen av lösningen.
+Upgiften syftar till att implementera Newtons metod för system i _Python_, med den beräknade Jacobimatrisen, för att iterativt närma sig lösningen för $d$ och $D_s$, med startgissningen $d_0 = 0.015m$ och $D_(s 0) = 0.8m$, och en tolerens på $10^(-8)$; samt analysera konvergensen av lösningen.
 
 
 ```python
@@ -374,23 +391,8 @@ def newton_method_system(d_0, D_0, tolerance, max_iter=10000):
 
 Lösningen i python är mycket lika lösningen från del 1.1 (@del1.1), med skillnaden att derivatan är utbytt mot Jacobimatrisen, och att både $d$ och $D_s$ löses ut med hjälp av linjära algebra. Lösningen konvergerar till *$d=0.0118869m$* och *$D_s=0.684476m$* efter 9 itterationer.
 
-#align(center)[#block(
-  fill:  luma(81.61%),
-  inset: 8pt,
-  radius: 4pt,
-  ```bash
-Initial guess: d = 0.015000, D = 0.800000
-Iteration 1: d = 0.014483, D = 0.753866, Error = 4.61e-02
-Iteration 2: d = 0.013815, D = 0.736671, Error = 1.72e-02
-Iteration 3: d = 0.013018, D = 0.715934, Error = 2.08e-02
-Iteration 4: d = 0.012303, D = 0.696451, Error = 1.95e-02
-Iteration 5: d = 0.011947, D = 0.686244, Error = 1.02e-02
-Iteration 6: d = 0.011888, D = 0.684513, Error = 1.73e-03
-Iteration 7: d = 0.011887, D = 0.684476, Error = 3.76e-05
-Iteration 8: d = 0.011887, D = 0.684476, Error = 1.66e-08
-Iteration 9: d = 0.011887, D = 0.684476, Error = 3.14e-15
-  ```
-)]
+En ytterdiameter av rörest på 11.9mm, och en innerdiameter av skalet på 68.4cm är rimliga lösningar för en värmeväxlare (@Figur1).
+
 
 *b)*
 Genom att använda beräkna felet till normen av uppdateringssteget $delta$, kan konvergensen analyseras på samma sätt som i del 1.1, och uppskatta konvergensordningen $p$ med @eq18
@@ -413,14 +415,14 @@ Order of convergence at iteration 8: 2.0036658242583423
   ```
 )]
 
-Detta ger en konvergensordning som i början svänger kraftigt, men som sedan stabiliseras runt *2*, vilket är i linje med den teoretiska konvergensordningen för Newtons metod.
+Detta ger en konvergensordning som i början svänger kraftigt, men som sedan stabiliseras runt *2*, vilket ilusterras bra i @Figur2 och är i linje med den teoretiska konvergensordningen för Newtons metod.
 
 #figure(
 
 image("/assets/Figure_2.png"),
-caption: [Log log]
+caption: [Log log plot av $e_(k+1)$ versus$e_k $]
 
-)
+)<Figur2>
 
 
 
@@ -434,7 +436,7 @@ caption: [Log log]
 *a)* Denna uppgift skall härleda den givna approximationen i @eq12 genom att använda Taylorytveckling av funktionen $f$ runt punkten $x+h$, och ta fram det specifika uttrycket för felet i approximationen, som är av ordning $h^2$.
 
 $
-  f(x_j) = (-omega_(j+2) + 4 omega_(j+1) - 3 omega_j) / (2h) + cal(O)(h^2) = (-f(x_j+2h) + 4 f(x_j+h) - 3 f(x_j)) / (2h)
+  f'(x_j) = (-omega_(j+2) + 4 omega_(j+1) - 3 omega_j) / (2h) + cal(O)(h^2) = (-f(x_j+2h) + 4 f(x_j+h) - 3 f(x_j)) / (2h)
 $
 $
   f(x_j+2h) = f(x_j) + 2h f'(x_j) + (2h)^2/2 f''(x_j) + (2h)^3/6 f'''(xi_1)
@@ -459,7 +461,7 @@ Där $xi_1, xi_2 in [x_j, x_j+2h]$. Detta visar att felet i approximationen är 
 
 
 *b)* Denna uppgift skall implementera tre olika finita differnsmetoder i _Python_ för att approximera derivatan av *$sin(e^x)$* vid $x=0.75$. Resultatet skall jämföras med den exakta derivatan, samt analysera plotta felet i varje metod för olika värden av $h=2^-k$, där  $k=1,2,3,4,5,6,7,8$.
-detta gav följande resultat:
+Beräkningarna gav följande resultat:
 
 #align(center)[
   #block(
@@ -625,7 +627,7 @@ $
 e_(r m s) = (1/(N-1) dot sum_(k)^(N-1 )(T_k- cal(T)_k)^2)^(1 slash 2)
 $<eq51>
 *a)*
-Den numeriska lösningen ger en mycket bra approximation av den analytiska lösningen, med ett felet *$e_(r m s) = 0.00365 space K$*, som i plotten (@Figur3) ser identiska ut. Från @Figur4 kan det även ses att felet är störst nära $x=0$.
+Den numeriska lösningen ger en mycket bra approximation av den analytiska lösningen, med ett felet *$e_(r m s) = 0.00365 space K$*, som i plotten (@Figur3) ser identiska ut. Från @Figur4 kan det även ses att felet är störst nära $x=0$. Detta är förväntat, eftersom det är där temperaturgradienten är som störst, vilket kan leda till större numeriska fel i den finita differens approximationen av andra derivatan. Även om felet är störst nära $x=0$, så är det fortfarande mycket litet i absoluta termer, vilket indikerar att den numeriska lösningen är mycket noggrann över hela intervallet.
 
 
   #figure(
@@ -636,11 +638,11 @@ Den numeriska lösningen ger en mycket bra approximation av den analytiska lösn
 
 #figure(
     image("/assets/del2.2.2.png", width: 80%),
-  caption: []
+  caption: [Skillnaden mellan numerisk och analytisk lösning över intervallet $[0, L] (m)$.]
 ) <Figur4>
 
 *b)*
-För att beräkna norgranhets ordningen, kan felet (rms @eq51) beräknas för olika värden av $N = 50, 100, 200, 400, 800$ ($h= L/(N-1)$), och sedan använda formeln:
+För att beräkna norgrannhetsordningen, kan felet (rms @eq51) beräknas för olika värden av $N = 50, 100, 200, 400, 800$ ($h= L/(N)$), och sedan använda formeln:
 $
   e approx C h^(-p) => ln(e) = ln(C) - p ln(h) => p = (ln(e_2) - ln(e_1)) / (ln(h_2) - ln(h_1))
 $
@@ -661,7 +663,7 @@ Order of convergence between N=400 and N=800: 2.0
   )]
 #figure(
   image("/assets/8.3/Figure_1.png", width: 80%),
-  caption: [loglog]
+  caption: [loglog plot av $e$ mot $n$ för att uppskatta nogranhetsordningen. ]
 )
 
 
@@ -670,7 +672,7 @@ Order of convergence between N=400 and N=800: 2.0
 === Del 8.4
 Här ska både den linjära och icke-linjära termen i ekvationen @eq14 lösas, för att modellera värmestrålningens effekt. Lösningen skall implementerar tre olika flänsar med olika materialegenskaper (@Tabell4), och resultaten jämföras in en plot.
 
-givna paramtrar för systemet är: $L=0.30m, quad D=5.0dot 10^(-3)m, quad, T(0)=372.15 K, quad T(L)=293.15 K $
+givna paramtrar för systemet är: $L=0.30m, quad D=5.0dot 10^(-3)m, quad, T(0)=373.15 K, quad T(L)=293.15 K $
 
 $
   alpha_1 = (4h_c)/(D dot K) quad quad alpha_2 = (4 epsilon sigma)/(D dot K)
@@ -744,7 +746,7 @@ image("/assets/rmse/Figure_2.png"),
 image("/assets/rmse/Figure_3.png")
 
   ),
-  caption: []
+  caption: [loglog plot av RMSE mellan temperaturfördelning för olika längder av flänsen, mot en fläns med 1.5 gånger längre längd, för de tre olika materialen. ],
 ) <Figur6>
 
 *Diskussion*
@@ -794,4 +796,26 @@ image("/assets/rmse2/Figure_3.png")
   caption: [
     RMSE mellan temperaturfördelning för olika längder av flänsen, mot en referenslösning med mycket lång fläns (L=100m)
   ]
+)
+
+== Bilaga B <bilagaB>
+#figure(
+align(center)[#block(
+  fill:  luma(81.61%),
+  inset: 8pt,
+  radius: 4pt,
+  ```bash
+Initial guess: d = 0.015000, D = 0.800000
+Iteration 1: d = 0.014483, D = 0.753866, Error = 4.61e-02
+Iteration 2: d = 0.013815, D = 0.736671, Error = 1.72e-02
+Iteration 3: d = 0.013018, D = 0.715934, Error = 2.08e-02
+Iteration 4: d = 0.012303, D = 0.696451, Error = 1.95e-02
+Iteration 5: d = 0.011947, D = 0.686244, Error = 1.02e-02
+Iteration 6: d = 0.011888, D = 0.684513, Error = 1.73e-03
+Iteration 7: d = 0.011887, D = 0.684476, Error = 3.76e-05
+Iteration 8: d = 0.011887, D = 0.684476, Error = 1.66e-08
+Iteration 9: d = 0.011887, D = 0.684476, Error = 3.14e-15
+  ```
+)],
+caption: [Iterativ lösning av Newtons metod för system, där både $d$ och $D_s$ löses ut samtidigt.]
 )

@@ -18,7 +18,7 @@ SETUP_8_4A = {
 	"T_s": 373.15,
 	"materials": {
 		"SS AISI 316": {"K": 14, "h_c": 100, "epsilon": 0.17},
-		"Aluminium": {"K": 180, "h_c": 100, "epsilon": 0.85},
+		"Aluminium": {"K": 180, "h_c": 100, "epsilon": 0.82},
 		"Copper": {"K": 398, "h_c": 100, "epsilon": 0.03},
 	},
 }
