@@ -41,7 +41,7 @@
   #v(0.5cm)
   #text(size: 14pt)[Värmeöverföring: Från teori till numerisk lösning]
   #v(3cm)
-  #text(size: 12pt)[Författare: Sebastian Alin, Robert Falk, Pontus Graf von Hasslingen]
+  #text(size: 12pt)[Författare: Sebastian Alin, Robert Falk, Pontus Graf von Haslingen]
   #v(0.2cm)
   #text(size: 11pt)[Datum: #datetime.today().display()]
   #v(5cm)
