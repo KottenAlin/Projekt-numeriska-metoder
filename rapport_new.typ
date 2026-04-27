@@ -6,7 +6,7 @@
 
 #set page(
   paper: "a4",
-  margin: (left: 2cm, right: 2.5cm, top: 2.5cm, bottom: 2.5cm),
+  margin: (left: 2cm, right: 2.5cm, top: 2.5cm, bottom: 2cm),
   numbering: "1",
   header: [
     #set align(right)
@@ -97,8 +97,8 @@ Värmeväxlarne i det första problemet kan beskrivas av följande icke-linjära
   table(
   columns: (auto, auto, auto),
   align: (center, center, center),
-  stroke: 0.6pt,
-  inset: 8pt,
+  stroke: 0.4pt,
+  inset: 6pt,
 
   [*Parameter*], [*Värde*], [*Enhet*],
   [$R_(f i)$], [$1.76 dot 10^(-4)$], [$m^2 degree C slash W$],
@@ -141,7 +141,7 @@ $ <eq6>
   columns: (auto, auto, auto),
   align: (center, center, center),
   stroke: 0.6pt,
-  inset: 8pt,
+  inset: 6pt,
 
   [*Parameter*], [*Värde*], [*Enhet*],
   [$c$],      [$0.389$],               [$W s dot m$],
@@ -280,7 +280,7 @@ Genom att plotta funktionen $f(d)$ över intervallet $[0, 2]$ kan vi visuellt be
 Den andra roten ligger nära *$d approx 0.8314m$* (se @disk:1.1.3c). Detta stämmer väl med körningarna där startgissningar som $0.4$, $0.95$ och $1.1$ konvergerar mot samma andra rot. För en startgissningen $1.5$ konvergerar inte metoden.
 
 #figure(
-  image("/assets/del1/man.png"),
+  image("/assets/del1/man.png", alt: "Bildbeskrivning", width: 80%),
   caption: [plot av $f(d)$ över intervallet $[0, 2]$ ]
 ) <Figur_fd>
 
@@ -538,14 +538,9 @@ def finite_difference(a_1, a_2, T_inf, T_s, L, N=100):
 
     def newton_method(T0, tol=1e-6, max_iter=1000):
         T = T0.copy()
-        for _ in range(max_iter):
-            F_vec = F(T)
-            J = jacobian(T)
-            delta_T = np.linalg.solve(J, -F_vec)#Solve the linear system to find deltaT
-            T[1:-1] += delta_T # Update the interior points of T using delta_T.
-            if np.linalg.norm(delta_T) < tol: # Check for convergence
-                return T
         T0[i] = T_s + (T_inf - T_s) * (x[i] / L) # Linear interpolation start guess
+
+        ''' code for newton method  can be found in previous sections '''
 
     T = newton_method(T0)
     return x, T
@@ -565,7 +560,7 @@ $
   columns: (auto, auto, auto),
   align: (center, center, center),
   stroke: 0.6pt,
-  inset: 8pt,
+  inset: 5pt,
 
   [*Parameter*], [*Värde*], [*Enhet*],
   [$h_c$],       [$40$],              [$W slash (m^2 dot K)$],
@@ -587,7 +582,7 @@ $<eq51>
 Den numeriska lösningen ger en mycket bra approximation av den analytiska lösningen, med ett fele på *$e_(r m s) = 0.00365 space K$*, som i plotten (@Figur3) ser identiska ut. Från @Figur4 kan det även ses att felet är störst nära $x=0$ (se @disk:2.2).
 
   #figure(
-    image("/assets/del2.2.1.png", width: 80%),
+    image("/assets/del2.2.1.png", width: 75%),
   caption: [Numerisk lösning jämfört med analytisk lösning.]
 ) <Figur3>
 
@@ -625,7 +620,7 @@ Där $sigma$ är Stefan-Boltzmanns konstant: $sigma = 5.67 dot 10^(-8) space W s
   columns: (auto, auto, auto, auto, auto),
   align: (center, center, center),
   stroke: 0.6pt,
-  inset: 8pt,
+  inset: 5pt,
 
    [*Parameter*], [*SS AISI 316*], [*Aluminium *], [*Koppar *], [*Enhet*],
 
@@ -748,9 +743,9 @@ image("/assets/rmse2/Figure_3.png")
 #figure(
 align(center)[#block(
   fill:  luma(81.61%),
-  inset: 8pt,
+  inset: 6pt,
   radius: 4pt,
-```  bash
+```bash
 Initial guess: d = 0.015000, D = 0.800000
 Iteration 1: d = 0.014483, D = 0.753866, Error = 4.61e-02
 Iteration 2: d = 0.013815, D = 0.736671, Error = 1.72e-02
