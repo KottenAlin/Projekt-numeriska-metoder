@@ -641,7 +641,7 @@ Där $sigma$ är Stefan-Boltzmanns konstant: $sigma = 5.67 dot 10^(-8) space W s
 
 #figure(
     image("/assets/del2.2.3.png", width: 85%),
-  caption: [Temperaturfördelning i de tre olika materialen över Längden $L$.]
+  caption: [Temperaturfördelning i de tre olika materialen över Längden $L$ (x: meter, T: Kelvin).]
 ) <Figur5>
 
 *b)*
