@@ -41,7 +41,7 @@
     *Författare:* \
     Sebastian Alin (20070115-4155, sebali\@kth.se) \
     Robert Falk (20040623-5150, robertef\@kth.se) \
-    Pontus Graf von Hasslingen (20060907-0073, pgvhgvs\@kth.se)
+    Pontus Graf von Haslingen (20060907-0073, pgvhgvs\@kth.se)
   ]
   #v(0.2cm)
   #text(size: 11pt)[Datum: #datetime.today().display()]
