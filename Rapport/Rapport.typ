@@ -779,6 +779,7 @@ En bra upskattning för längden där antagandet om oändlig längd skall vara n
 
 
 = Diskussion
+Ett intressant resultat är plotten på fråga 5b), (figur 4). Den rör sig något underligt på dem första punkterna där en punkt "hoppar" ner, efter det beter sig plotten mer normalt med en kvadratisk konvergens som förväntas. Vad kan vara orsaken till detta fenomen? En teori är att detta beror på att Newtons metod ännu inte befinner sig i ett område där den lokala linjära approximationen är giltig, därför beter den sig inte kvadratiskt. Det plötsliga hoppet motsvarar ett steg där iterationen når nära lösningen, vilket leder till en kraftig felreduktion som syns på plotten. Därefter fortsätter metoden som förväntat med en stabil kvadratisk konvergens med lutning nära 2, vilket framgår av den linjära relationen i diagrammet.
 
 Discuss your findings and their implications.
 
