@@ -124,7 +124,7 @@ $
 $
 För att lösa denna rot, användes Newtons metod, som iterativt närmar sig lösningen genom att uppdatera gissningen baserat på funktionen och dess derivata.
 $
-  x_(d+1) = d_n - f(d_n)/f'(d_n)
+  d_(n+1) = d_n - f(d_n)/(f'(d_n))
 $
 
 
