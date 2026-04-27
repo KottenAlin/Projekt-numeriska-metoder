@@ -700,7 +700,7 @@ Utvärderingen av ekvationssystemet ger en ytterdiameter av rörest på 11.9mm, 
 
 Att den uppskattade konvergensordningen för ekvationssystemet fluktuerar kraftigt under de första iterationerna är ett förväntat beteende (@Figur2). Detta beror på att Newtons metod endast är lokalt kvadratiskt konvergent. Under de första iterationerna befinner sig startgissningen utanför den region där Taylorutvecklingens andragradsterm dominerar, vilket gör att stegen styrs av funktionens globala icke-linjäritet.
 
-=== Del 2.1 uppgift 6 b) <disk:2.1.6b>
+=== Del 2.1 uppgift 6 a) <disk:2.1.6a>
 
 Att framåt- och bakåtdifferens ger ett något större fel än centraldifferens beror på trunkeringsfelets ledande konstant (@Figur:del2.1). Trots att alla tre metoder har noggrannhetsordning $cal(O)(h^2)$, är konstanten för tre-punkts framåt- och bakåtdifferens ($plus.minus h^2/3 f'''(xi)$) ungefär dubbelt så stor som för centraldifferensen. ($-h^2/6 f'''(xi)$). I en log-log-plot resulterar denna faktor två i en parallellförskjutning uppåt. Anledningen till att framåt- och bakåtdifferens har härledda högre ordningens differensformler beror på att de kan användas till att approximera förstaderivatan för randvillkor där centraldifferensen inte kan tillämpas. Det är därför önskvärt att ha en högre noggrannhet än den enkla framåt- eller bakåtdifferensen, speciellt för Neumannvillkor där det exakta värdet av derivatan är okänd och en noggranhetsordning på $cal(O)(h^2)$ är önskvärd att kombineras med centraldifferensens noggrannhet på $cal(O)(h^2)$ för att inte förlora noggrannhet i närheten av randvillkor. 
 
