@@ -723,7 +723,7 @@ Metoden hade möjligen också kunnat implementeras genom att jämföra temperatu
 
 Detta kunde implementeras separat och gav liknande uppskattningar av den kritiska längden där värmestrålningens effekt kan ignoreras: 0.074 m (SS AISI 316), 0.260 m (Aluminium) och 0.420 m (Koppar) för en tolerans på $0.1%$ (se @bilagaA[Bilaga A]).
 
-Felet (@Figur6) avtar inte helt monotont, vilket sannolikt beror på att lösningarna jämförs på olika diskreta nät och att interpolation därför krävs. Eftersom ett fast antal delintervall används ökar dessutom steglängden när flänslängden växer, vilket påverkar noggrannheten nära $x=0$, och kan ge små lokala variationer i felet.
+Felet (@Figur6) avtar initialt mycket kraftigt, vilket speglar den fysikaliska konvergensen; när flänslängden ökar närmar sig temperaturprofilen i änden snabbt den för en oändligt lång fläns. Att felet därefter når ett lokalt minimum och börjar öka beror på en numerisk artefakt. Eftersom ett fast antal delintervall ($N=400$) används, växer steglängden $h = L/N$ proportionellt med flänslängden. Detta medför att trunkeringsfelet ($cal(O)(h^2)$) växer sig stort, och skillnaden i diskretiseringsfel mellan rutnäten för $L$ och $1.5L$ blir dominant, vilket ökar mätfelet. Att felet slutligen minskar igen vid mycket stora längder förklaras av att nästan hela flänsen då har antagit omgivningstemperaturen $T_infinity$. Därmed utvärderas majoriteten av punkterna till i stort sett punktvis nollskillnad oavsett flänslängd, vilket trycker ner det genomsnittliga kvadratiska felet (RMSE).
 
 
 #pagebreak()
