@@ -12,23 +12,25 @@ def derivative_13(f, x, h):
 
 
 
-def plot_error(h_values, error,  xlabel='x', ylabel='Error', title='Error between Finite Difference and Analytical Solution'):
+def plot_error(h_values, errors, title='Trunkeringsfel för differensapproximationer'):
     ''' loglog plot of error '''
 
     # Reference error is h^2 for all three methods, so we can plot a reference line for h^2 to compare the slopes.
     h_ref = np.array(h_values)
-    error_array = np.array(error)
 
     # Scale the reference line to start at the same point as the real error
     error_ref = h_ref**2
-    scale_factor = error_array[0] / error_ref[0]
+    scale_factor = errors['error_8'][0] / error_ref[0]
     error_ref = error_ref * scale_factor
-    plt.loglog(h_ref, error_ref, label='Reference: h^2', linestyle='--')
+    plt.loglog(h_ref, error_ref, label='Referens: O(h^2)', linestyle='--', color='gray')
 
-    plt.loglog(h_ref, error, label='Error')
+    plt.loglog(h_ref, errors['error_8'], label='Ekvation 8 (Central)', marker='o')
+    plt.loglog(h_ref, errors['error_12'], label='Ekvation 12 (Framåt)', marker='s')
+    plt.loglog(h_ref, errors['error_13'], label='Ekvation 13 (Bakåt)', marker='^')
+
     plt.gca().invert_xaxis()
     plt.xlabel('h')
-    plt.ylabel(ylabel)
+    plt.ylabel('Fel (Error)')
     plt.title(title)
     plt.legend()
     plt.show()
@@ -68,9 +70,7 @@ def main():
 
 
     # Plot the errors
-    plot_error([h(k) for k in K], error['error_8'], xlabel='h', ylabel='Error', title='8-point Finite Difference Error')
-    plot_error([h(k) for k in K], error['error_12'], xlabel='h', ylabel='Error', title='12-point Finite Difference Error')
-    plot_error([h(k) for k in K], error['error_13'], xlabel='h', ylabel='Error', title='13-point Finite Difference Error')
+    plot_error([h(k) for k in K], error)
 
     # calculate the order of convergence using polyfit on the log-log data
     for method in error:
