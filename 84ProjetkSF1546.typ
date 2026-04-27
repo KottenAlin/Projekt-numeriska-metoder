@@ -37,7 +37,12 @@
   #v(0.5cm)
   #text(size: 14pt)[Värmeöverföring: Från teori till numerisk lösning]
   #v(3cm)
-  #text(size: 12pt)[Författare: Sebastian Alin, Robert Falk, Pontus Graf von Hasslingen]
+  #text(size: 12pt)[
+    *Författare:* \
+    Sebastian Alin (20070115-4155, sebali\@ug.kth.se) \
+    Robert Falk (ÅÅMMDD-XXXX, robert\@example.com) \
+    Pontus Graf von Hasslingen (ÅÅMMDD-XXXX, pontus\@example.com)
+  ]
   #v(0.2cm)
   #text(size: 11pt)[Datum: #datetime.today().display()]
   #v(5cm)
@@ -667,7 +672,7 @@ def find_infinite_length(L0=0.01, rel_tol=1e-3):
         L *= 1.1
 ```
 
-En rimlig uppskattning för längden där antagandet om oändlig längd skall vara noggrant bör därför vara *0.098m* för SS AISI 316, *0.340m* för aluminium, och *0.548m* för koppar, om toleransen sätts till $1%=0.80K$, och *0.159m* (SS AISI 316), *0.548m* (Aluminium) samt *0.882 m* (koppar) för en tolerans på $0.1%=0.080K$ (se @).
+En rimlig uppskattning för längden där antagandet om oändlig längd skall vara nogrant bör därför vara *0.098m* för SS AISI 316, *0.340m* för aluminium, och *0.548m* för koppar, om toleransen sätts till $1%=0.80K$, och *0.159m* (SS AISI 316), *0.548m* (Aluminium) samt *0.882 m* (koppar) för en tolerans på $0.1%=0.080K$ (se @).
 
 #figure(
   grid(

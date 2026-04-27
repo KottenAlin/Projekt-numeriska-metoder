@@ -1,3 +1,6 @@
+# Author: Sebastian Alin, Robert Falk, Pontus Graf von Hasslingen
+# Date: 2026-04-10
+
 import numpy as np
 import matplotlib.pyplot as plt
 
