@@ -353,41 +353,41 @@ $ (partial g)/(partial D_s) = -d/(D_s^2 dot h_t) - d dot R_(f i)/D_s^2 - d /(2k_
 
 === Uppgift 5
 *a)*
-Upgiften syftar till att implementera Newtons metod för system i _Python_, med den beräknade Jacobimatrisen, för att iterativt närma sig lösningen för $d$ och $D_s$, med startgissningen $d_0 = 0.015m$ och $D_(s 0) = 0.8m$, och en tolerens på $10^(-8)$; samt analysera konvergensen av lösningen.
+
+#strong[Newtons metod för ett system av ekvationer]
+
+Newtons metod används för att lösa det icke-linjära ekvationssystemet
+$F(x) = 0$, där $x = (d, D_s)$. Metoden bygger på en linjär approximation
+av systemet kring en gissning $x^(k)$, vilket ger ett linjärt system
+baserat på Jacobimatrisen $J(x^(k))$. Genom att lösa detta system fås
+en korrigering $Delta x^(k)$, som används för att uppdatera lösningen.
+Detta upprepas tills förändringen $||Delta x^(k)||$ är tillräckligt liten,
+vilket betyder att en lösning har uppnåtts.
+
+ Välj startvärde $x^(0) = (d^(0), D^(0))$
+
+ Välj tolerans $ε > 0$
+
+ För $k = 0, 1, 2, …$ gör:
+
+  - Beräkna $F(x^(k))$
+
+  - Beräkna Jacobimatrisen $J(x^(k))$
+
+  - Lös det linjära systemet:
+    $J(x^(k)) Delta x^(k) = -F(x^(k))$
+
+  - Uppdatera:
+    $x^(k+1) = x^(k) + Delta x^(k)$
+
+   Om $||Delta x^(k)|| < ε$, avbryt iterationen
 
 
-```python
-def jacobian(d, D):
-    return np.array([[dF1dd(d, D), dFdD(d, D)],
-                     [dF2dd(d, D), dF2dD(d, D)]])
 
-# implement the Newton's method for solving the system of equations F(d, D) = 0
-def newton_method_system(d_0, D_0, tolerance, max_iter=10000):
-    d_n = d_0
-    D_n = D_0
-    errors = []
-    for i in range(max_iter):
-        F_n = F(d_n, D_n)
-        J_n = jacobian(d_n, D_n)
 
-        if np.linalg.det(J_n) == 0:  # Avoid singular Jacobian
-            print("Jacobian is singular. No solution found.")
-            return None
+  
 
-        delta = np.linalg.solve(J_n, -F_n) # Solve J_n * delta = -F_n for the update step
-        d_next = d_n + delta[0]
-        D_next = D_n + delta[1]
-        errors.append(np.linalg.norm(delta))
 
-        if np.linalg.norm(delta) < tolerance:
-            print(f"Converged to (d={d_next}, D={D_next}) after {i+1} iterations.")
-            return d_next, D_next, errors
-
-        d_n, D_n = d_next, D_next
-
-    print("Maximum iterations reached. No solution found.")
-    return None
-```
 
 Lösningen i python är mycket lika lösningen från del 1.1 (@del1.1), med skillnaden att derivatan är utbytt mot Jacobimatrisen, och att både $d$ och $D_s$ löses ut med hjälp av linjära algebra. Lösningen konvergerar till *$d=0.0118869m$* och *$D_s=0.684476m$* efter 9 itterationer.
 
