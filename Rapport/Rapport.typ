@@ -41,7 +41,10 @@
   #v(0.5cm)
   #text(size: 14pt)[Värmeöverföring: Från teori till numerisk lösning]
   #v(3cm)
-  #text(size: 12pt)[Författare: Sebastian Alin, Robert Falk, Pontus Graf von Haslingen]
+      *Författare:* \
+    Sebastian Alin (20070115-4155, sebali\@kth.se) \
+    Robert Falk (20040623-5150, robertef\@kth.se) \
+    Pontus Graf von Haslingen (20060907-0073, pgvhgvs\@kth.se)
   #v(0.2cm)
   #text(size: 11pt)[Datum: #datetime.today().display()]
   #v(5cm)
@@ -385,7 +388,7 @@ vilket betyder att en lösning har uppnåtts.
 
 
 
-  
+
 
 
 
