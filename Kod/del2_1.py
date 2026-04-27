@@ -18,7 +18,7 @@ def derivative_13(f, x, h):
 def plot_error(h_values, errors, title='Trunkeringsfel för differensapproximationer'):
     ''' loglog plot of error '''
 
-    # Reference error is h^2 for all three methods, so we can plot a reference line for h^2 to compare the slopes.
+    # Reference error is h^2 for all three methods, so we can plot a referenc e line for h^2 to compare the slopes.
     h_ref = np.array(h_values)
 
     # Scale the reference line to start at the same point as the real error
