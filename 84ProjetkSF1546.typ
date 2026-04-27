@@ -40,7 +40,7 @@
   #text(size: 12pt)[
     *Författare:* \
     Sebastian Alin (20070115-4155, sebali\@ug.kth.se) \
-    Robert Falk (ÅÅMMDD-XXXX, robert\@example.com) \
+    Robert Falk (040623-5150, robertef\@kth.se) \
     Pontus Graf von Hasslingen (ÅÅMMDD-XXXX, pontus\@example.com)
   ]
   #v(0.2cm)
